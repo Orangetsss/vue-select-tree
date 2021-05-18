@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import VueSelectTree from './vue-select-tree.vue'
+import VueSelectTree from '../packages/vue-select-tree/vue-select-tree.vue'
 
 export default {
 	name: 'App',
