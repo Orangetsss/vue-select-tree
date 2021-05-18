@@ -1,16 +1,15 @@
 <template>
     <el-select
+        class="vue-select-tree"
+        ref="vue-select-tree"
+        popper-class="ss-popper-class"
         v-model.trim="value"
-        popper-class="orgTreeSelect"
         :placeholder="placeholder"
-        v-if="attr.type.type === 'ORGANIZATION'"
-        :disabled="disabled"
-        ref="orgSelect">
+        :disabled="disabled">
         <el-option value="">
             <el-tree
-                class="filter-tree"
                 node-key='id'
-                ref="orgTree"
+                ref="ss-tree"
                 lazy
                 :load="getChildrenNode"
                 :highlight-current="true"
@@ -19,14 +18,12 @@
                 :data="treeData"
                 :props="defaultProps">
                 <!-- node option -->
-                <span slot-scope="{ node }" style="display: flex;flex-direction: row;justify-content: space-between;width: 100%;">
+                <template v-slot="{ node }" style="display: flex;flex-direction: row;justify-content: space-between;width: 100%;">
                     <!-- 机构 -->
                     <div style="width:100%" :class="{'loadSpan': node.data.id === 'custom'}" >
-                        <!-- <i v-if="node.data.id === 'custom'" class="el-icon-loading" style="margin-right: 5px"></i> -->
-                        <!-- <i v-else class="iconfont iconbumen" style="color:#6A6E73"></i> -->
                         {{ node.label }}
                     </div>
-                </span>
+                </template>
             </el-tree>
         </el-option>
     </el-select>
@@ -35,6 +32,16 @@
 <script>
 export default {
     name: 'vueSelectTree',
+    props: {
+        placeholder: {
+            type: String,
+            default: '请选择组织机构'
+        },
+        disabled: {
+            type: Boolean,
+            default: false
+        }
+    },
     data(){
         return{
             treeData: [],
@@ -43,38 +50,61 @@ export default {
                 label: 'name',
                 isLeaf: 'leaf'
             },
-            value: '',
-            disabled:false,
-            placeholder:'请选择组织机构'
+            value: ''
         }
     },
     methods: {
-        getChildrenNode(node, resolve){
+        async getChildrenNode(node, resolve){
+            if (node.level === 0) {
+                return resolve([{ name: 'region', leaf: false, children: [{name: 'zoom'}] }]);
+            }
             if (node.level > 0) {
-                // getChildrenNode(node.data.id).then(response => {
-                //     if (response) {
-                //         resolve(response.data.data)
-                //     }
-                // })
+                // 获取下级数据
+                if(this.$parent.getChildrenNode){
+                    let { data } = await this.$parent.getChildrenNode();
+                    if(data)  return resolve(data)
+                }else{
+                    throw '引用组件页面未定义getChildrenNode方法'
+                }
             }
         },
         // 节点点击
         nodeClick(nodeData, node, vnode) {
+            console.log(nodeData.name)
+            console.log(node)
+            console.log(vnode)
             // this.$set(this.form, 'organizationId', nodeData.name)
             // this.orgId = nodeData.id
             // this.$refs['form'].clearValidate('organizationId')
-            // // 隐藏下拉框
-            for (let i = 0; i < this.$refs.orgSelect.length; i++) {
-                this.$refs.orgSelect[i].blur()
-            }
+            // 输入框赋值
+            this.value=nodeData.name
+            // 隐藏下拉框
+            this.$refs['vue-select-tree'].blur()
+            // for (let i = 0; i < this.$refs['vue-select-tree'].length; i++) {
+            //     this.$refs['vue-select-tree'][i].blur()
+            // }
+            
         },
     }
 }
 </script>
 
 <style scoped>
-    .orgTreeSelect .el-select-dropdown__item {
+    .vue-select-tree{
+        height:100%;
+        width:100%;
+        line-height: 1;
+    }
+    .vue-select-tree >>> .el-input, 
+    .vue-select-tree >>> .select-trigger,
+    .vue-select-tree >>> .el-input__inner,
+    .vue-select-tree >>> .el-input__icon{
+        height:100%;
+        line-height: 1;
+    }
+    .ss-popper-class .el-select-dropdown__item {
         height: auto;
+        line-height: 1;
         padding: 0;
         /* min-height: 140px; */
         background: white;
