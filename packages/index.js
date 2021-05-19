@@ -1,7 +1,7 @@
-import vueSelectTree from './vue-select-tree'
+import VueSelectTree from './vue-select-tree'
 
 const components = [
-    vueSelectTree
+  VueSelectTree
 ]
 
 const install = function(Vue) {
@@ -16,5 +16,5 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 export default {
   install,
-  vueSelectTree
+  VueSelectTree
 }

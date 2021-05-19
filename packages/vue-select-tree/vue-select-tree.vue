@@ -40,6 +40,10 @@ export default {
         disabled: {
             type: Boolean,
             default: false
+        },
+        loadMethod: {
+            type: String,
+            default: 'getChildrenNode'
         }
     },
     data(){
@@ -60,8 +64,8 @@ export default {
             }
             if (node.level > 0) {
                 // 获取下级数据
-                if(this.$parent.getChildrenNode){
-                    let { data } = await this.$parent.getChildrenNode();
+                if(this.$parent[this.loadMethod]){
+                    let { data } = await this.$parent[this.loadMethod]();
                     if(data)  return resolve(data)
                 }else{
                     throw '引用组件页面未定义getChildrenNode方法'

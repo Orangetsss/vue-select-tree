@@ -2,6 +2,7 @@
 	<VueSelectTree
 		:placeholder="placeholder"
 		:disabled="disabled"
+		loadMethod="getChildrenNode"
 		style="width:360px;height:32px">
 	</VueSelectTree>
 </template>
@@ -13,10 +14,10 @@ export default {
 	name: 'App',
 	data(){
 		return{
-		// 提示文字
-		placeholder: '请选择机构',
-		// 禁用
-		disabled: false
+			// 提示文字
+			placeholder: '请选择机构',
+			// 禁用
+			disabled: false
 		}
 	},
 	methods: {

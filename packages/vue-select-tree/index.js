@@ -1,7 +1,7 @@
-import vueSelectTree from './vue-select-tree.vue'
+import VueSelectTree from './vue-select-tree.vue'
 
-vueSelectTree.install = function(Vue) {
-  Vue.component(vueSelectTree.name, vueSelectTree)
+VueSelectTree.install = function(Vue) {
+  Vue.component(VueSelectTree.name, VueSelectTree)
 }
 
-export default vueSelectTree
+export default VueSelectTree
